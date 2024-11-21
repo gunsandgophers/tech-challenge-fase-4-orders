@@ -1,0 +1,2 @@
+DROP INDEX IF EXISTS idx_category;
+DROP TABLE IF EXISTS products;

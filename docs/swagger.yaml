@@ -1,0 +1,405 @@
+basePath: /api/v1
+definitions:
+  controllers.CheckoutRequest:
+    properties:
+      customer_id:
+        type: string
+      products_ids:
+        items:
+          type: string
+        type: array
+    type: object
+  controllers.PaymentRequest:
+    properties:
+      order_id:
+        type: string
+      payment_status:
+        type: string
+    type: object
+  controllers.PreparationStatusUpdateRequest:
+    properties:
+      preparation_status:
+        type: string
+    type: object
+  controllers.ProductRequest:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dtos.CheckoutDTO:
+    properties:
+      amount:
+        type: number
+      method:
+        $ref: '#/definitions/dtos.MethodType'
+      orderId:
+        type: string
+      paymentLink:
+        type: string
+    type: object
+  dtos.MethodType:
+    enum:
+    - PIX
+    - CREDIT_CARD
+    type: string
+    x-enum-varnames:
+    - PIX
+    - CREDIT_CARD
+  dtos.OrderDisplayDTO:
+    properties:
+      createdAt:
+        type: string
+      customer_id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/dtos.OrderItemDisplayDTO'
+        type: array
+      order_id:
+        type: string
+      preparation_status:
+        type: string
+    type: object
+  dtos.OrderItemDisplayDTO:
+    properties:
+      product_name:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  dtos.PaymentStatusDTO:
+    properties:
+      order_id:
+        type: string
+      payment_status:
+        type: string
+    type: object
+  dtos.ProductDTO:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: get index payload
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Show the index payload
+      tags:
+      - index
+  /order/{order_id}/payment-status:
+    get:
+      consumes:
+      - application/json
+      description: get payment status by order_id
+      parameters:
+      - description: Get Payment Status
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PaymentStatusDTO'
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "406":
+          description: when invalid params or invalid object
+          schema:
+            type: string
+      summary: Get a payment status
+      tags:
+      - orders
+  /order/{order_id}/preparation-status:
+    put:
+      consumes:
+      - application/json
+      description: Update the preparation status for an order
+      parameters:
+      - description: Order Identification
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: Order Request Params
+        in: body
+        name: preparation_status_update
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.PreparationStatusUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: when bad request
+          schema:
+            type: string
+      summary: Update order preparation status
+      tags:
+      - orders
+  /order/checkout:
+    post:
+      consumes:
+      - application/json
+      description: make a checkout for an order
+      parameters:
+      - description: Checkout
+        in: body
+        name: checkout
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CheckoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CheckoutDTO'
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "406":
+          description: when invalid params or invalid object
+          schema:
+            type: string
+      summary: Make an order checkout
+      tags:
+      - orders
+  /order/display:
+    get:
+      consumes:
+      - application/json
+      description: Get order list for a display
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.OrderDisplayDTO'
+            type: array
+        "400":
+          description: when bad request
+          schema:
+            type: string
+      summary: Get order list
+      tags:
+      - orders
+  /order/payment:
+    post:
+      consumes:
+      - application/json
+      description: process the payment for an order
+      parameters:
+      - description: Payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.PaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "406":
+          description: when invalid params or invalid object
+          schema:
+            type: string
+      summary: Process order payment
+      tags:
+      - orders
+  /product/:
+    post:
+      consumes:
+      - application/json
+      description: register the product information
+      parameters:
+      - description: Insert Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ProductDTO'
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "500":
+          description: when create product process error
+          schema:
+            type: string
+      summary: Create a product
+      tags:
+      - products
+  /product/{category}/:
+    get:
+      consumes:
+      - application/json
+      description: List a set of products information over followed categories
+      parameters:
+      - description: Product category
+        in: path
+        name: category
+        required: true
+        type: string
+      - description: Page defaults to 1
+        in: query
+        name: page
+        type: string
+      - description: Size defaults to 50
+        in: query
+        name: size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ProductDTO'
+            type: array
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "500":
+          description: when list products process error
+          schema:
+            type: string
+      summary: List products
+      tags:
+      - products
+  /product/{id}/:
+    delete:
+      consumes:
+      - application/json
+      description: remove the product information
+      parameters:
+      - description: Product identifier
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: when when bad request
+          schema:
+            type: string
+        "500":
+          description: when delete product process error
+          schema:
+            type: string
+      summary: Delete a product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: change the product information
+      parameters:
+      - description: Product identifier
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Product object
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.ProductDTO'
+        "400":
+          description: when bad request
+          schema:
+            type: string
+        "500":
+          description: when update product process error
+          schema:
+            type: string
+      summary: Update a product
+      tags:
+      - products
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

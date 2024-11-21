@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-deployment
+  labels:
+    app: tech-challenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tech-challenge
+  template:
+    metadata:
+      labels:
+        app: tech-challenge
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: tech-challenge-api
+        image: raffiuds/tech-challenge-go-app:latest
+        ports:
+        - containerPort: 8080
+          hostPort: 8080
+        env:
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: DB_NAME
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: DB_HOST
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: DB_PASSWORD
+        livenessProbe:
+          httpGet:
+            path: /api/v1
+            port: 8080
+          initialDelaySeconds: 180
+          periodSeconds: 15
+        resources:
+          requests:
+            cpu: 500m
+

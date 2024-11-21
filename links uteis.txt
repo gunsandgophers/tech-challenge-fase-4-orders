@@ -1,0 +1,17 @@
+Link do video
+https://youtu.be/sxDz7FfEzq8
+
+Repositório código da aplicação/api principal
+https://github.com/gunsandgophers/tech-challenge-fase-3
+
+Repositório do Terraform da aplicação principal no EKS
+https://github.com/gunsandgophers/terraform-app-fase-3
+
+Repositório do Terraform do banco de dados no RDS e justificativa da escolha
+https://github.com/gunsandgophers/terraform-db-fase-3
+
+Repositório com o código das lambdas referente aos Customers com integração ao Cognito
+https://github.com/gunsandgophers/lambda-fase-3
+
+Repositório do Terraform das lambdas, Cognito e API Gateway
+https://github.com/gunsandgophers/terraform-customer
