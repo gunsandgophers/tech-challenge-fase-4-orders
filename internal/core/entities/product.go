@@ -1,7 +1,5 @@
 package entities
 
-import "github.com/google/uuid"
-
 type ProductCategory string
 
 func (s ProductCategory) String() string {
@@ -22,17 +20,6 @@ type Product struct {
 	price       float64
 	description string
 	image       string
-}
-
-func CreateProduct(name string, category ProductCategory, price float64, description string, image string) *Product {
-	return RestoreProduct(
-		uuid.NewString(),
-		name,
-		category,
-		price,
-		description,
-		image,
-	)
 }
 
 func RestoreProduct(

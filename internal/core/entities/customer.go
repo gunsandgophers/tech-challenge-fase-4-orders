@@ -2,8 +2,6 @@ package entities
 
 import (
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
-
-	uuid "github.com/google/uuid"
 )
 
 type Customer struct {
@@ -11,25 +9,6 @@ type Customer struct {
 	name  string
 	email *valueobjects.Email
 	cpf   *valueobjects.CPF
-}
-
-func CreateCustomer(name string, email string, cpf string) (*Customer, error) {
-	emailVO, err := valueobjects.NewEmail(email)
-	if err != nil {
-		return nil, err
-	}
-
-	cpfVO, err := valueobjects.NewCPF(cpf)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Customer{
-		id:    uuid.NewString(),
-		name:  name,
-		email: emailVO,
-		cpf:   cpfVO,
-	}, nil
 }
 
 func RestoreCustomer(id string, name string, email string, cpf string) (*Customer, error) {

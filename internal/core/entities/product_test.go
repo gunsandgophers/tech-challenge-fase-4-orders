@@ -2,15 +2,18 @@ package entities
 
 import (
 	"testing"
+
+	uuid "github.com/google/uuid"
 )
 
-func TestCreateProduct(t *testing.T) {
+func TestRestoreProduct(t *testing.T) {
+	id := uuid.NewString()
 	name := "Product 1"
-	category := "Meal"
+	category := ProductCategory("Meal")
 	price := float64(10.4)
 	description := "Some description"
 	image := "Some image"
-	product := CreateProduct(name, category, price, description, image)
+	product := RestoreProduct(id, name, category, price, description, image)
 	if product.GetId() == "" {
 		t.Errorf("Id can't be empty")
 	}

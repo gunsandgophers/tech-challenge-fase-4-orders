@@ -10,30 +10,17 @@ import (
 // Registra as rotas dos controllers
 func registerRouters(app *APIApp) {
 	helloController := controllers.NewHelloController()
-	// customerController := controllers.NewCustomerController(app.customerRepository)
-	productController := controllers.NewProductController(app.productRepository)
+
 	orderController := controllers.NewOrderController(
 		app.orderRepository,
 		app.customerService,
-		app.productRepository,
 		app.mercadoPagoGateway,
-		app.eventManager,
 		app.orderDisplayListQuery,
 	)
 
 	baseUrl := "/api/v1"
 	app.httpServer.SetBasePath(baseUrl)
 	app.httpServer.GET("/", helloController.Index)
-
-	//customer
-	// app.httpServer.POST("/customer/", customerController.RegisterCustomer)
-	// app.httpServer.GET("/customer/:cpf/", customerController.GetCustomer)
-
-	//products
-	app.httpServer.POST("/product", productController.CreateProduct)
-	app.httpServer.PUT("/product/:id", productController.UpdateProduct)
-	app.httpServer.DELETE("/product/:id", productController.DeleteProduct)
-	app.httpServer.GET("/product/:category", productController.ListProductsByCategory)
 
 	//orders
 	app.httpServer.POST("/order/checkout", orderController.Checkout)

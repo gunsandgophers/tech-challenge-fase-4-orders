@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"tech-challenge-fase-1/internal/core/events"
 	"tech-challenge-fase-1/internal/core/queries"
 	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/services"
@@ -13,26 +12,20 @@ import (
 type OrderController struct {
 	orderRepository       repositories.OrderRepositoryInterface
 	customerService       services.CustomerService
-	productRepository     repositories.ProductRepositoryInterface
 	paymentGateway        services.PaymentGatewayInterface
-	commandEventManager   events.ManagerEvent
 	orderDisplayListQuery queries.OrderDisplayListQueryInterface
 }
 
 func NewOrderController(
 	orderRepository repositories.OrderRepositoryInterface,
 	customerService services.CustomerService,
-	productRepository repositories.ProductRepositoryInterface,
 	paymentGateway services.PaymentGatewayInterface,
-	commandEventManager events.ManagerEvent,
 	orderDisplayListQuery queries.OrderDisplayListQueryInterface,
 ) *OrderController {
 	return &OrderController{
 		orderRepository:       orderRepository,
-		customerService:    customerService,
-		productRepository:     productRepository,
+		customerService:       customerService,
 		paymentGateway:        paymentGateway,
-		commandEventManager:   commandEventManager,
 		orderDisplayListQuery: orderDisplayListQuery,
 	}
 }
@@ -59,9 +52,7 @@ func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 	checkoutUseCase := orders.NewCheckoutOrderUseCase(
 		cc.orderRepository,
 		cc.customerService,
-		cc.productRepository,
 		cc.paymentGateway,
-		cc.commandEventManager,
 	)
 	checkout, err := checkoutUseCase.Execute(request.CustomerId, request.ProductsIds)
 	if err != nil {

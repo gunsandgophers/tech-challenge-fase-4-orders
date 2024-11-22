@@ -3,7 +3,6 @@ package app
 import (
 	"tech-challenge-fase-1/internal/infra/config"
 	"tech-challenge-fase-1/internal/infra/database"
-	"tech-challenge-fase-1/internal/infra/events"
 	httpserver "tech-challenge-fase-1/internal/infra/http"
 	"tech-challenge-fase-1/internal/infra/queries"
 	"tech-challenge-fase-1/internal/infra/repositories"
@@ -13,15 +12,12 @@ import (
 )
 
 type APIApp struct {
-	httpServer         *httpserver.GinHTTPServerAdapter
-	connection         *database.PGXConnectionAdapter
-	customerRepository *repositories.CustomerRepositoryDB
-	customerService *services.AwsCustomerService
-	productRepository  *repositories.ProductRepositoryDB
-	orderRepository    *repositories.OrderRepositoryDB
+	httpServer            *httpserver.GinHTTPServerAdapter
+	connection            *database.PGXConnectionAdapter
+	customerService       *services.AwsCustomerService
+	orderRepository       *repositories.OrderRepositoryDB
 	orderDisplayListQuery *queries.OrderDisplayListQueryDB
-	mercadoPagoGateway *services.MercadoPagoGateway
-	eventManager *events.EventManager
+	mercadoPagoGateway    *services.MercadoPagoGateway
 }
 
 func NewAPIApp() *APIApp {
@@ -49,14 +45,10 @@ func (app *APIApp) configCors() {
 func (app *APIApp) initConnectionDB() {
 	app.connection = database.NewPGXConnectionAdapter()
 
-	app.customerRepository = repositories.NewCustomerRepositoryDB(app.connection)
-	app.productRepository = repositories.NewProductRepositoryDB(app.connection)
 	app.orderRepository = repositories.NewOrderRepositoryDB(app.connection)
 	app.orderDisplayListQuery = queries.NewOrderDisplayListQueryDB(app.connection)
 
-	app.eventManager = events.NewEventManager()
-
-	app.mercadoPagoGateway = services.NewMercadoPagoGateway(app.eventManager)
+	app.mercadoPagoGateway = services.NewMercadoPagoGateway()
 	var err error
 	app.customerService, err = services.NewAwsCustomerService(
 		config.AWS_REGION,

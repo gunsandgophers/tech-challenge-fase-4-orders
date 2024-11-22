@@ -1,19 +1,14 @@
 package services
 
 import (
-	"tech-challenge-fase-1/internal/infra/events"
 	"tech-challenge-fase-1/internal/core/dtos"
-	// "time"
 )
 
 type MercadoPagoGateway struct {
-	eventManager *events.EventManager
 }
 
-func NewMercadoPagoGateway(eventManager *events.EventManager) *MercadoPagoGateway {
-	return &MercadoPagoGateway{
-		eventManager: eventManager,
-	}
+func NewMercadoPagoGateway() *MercadoPagoGateway {
+	return &MercadoPagoGateway{}
 }
 
 func (m *MercadoPagoGateway) Execute(order *dtos.OrderDTO, method dtos.MethodType) (*dtos.CheckoutDTO, error) {
@@ -22,7 +17,7 @@ func (m *MercadoPagoGateway) Execute(order *dtos.OrderDTO, method dtos.MethodTyp
 	total := order.Total
 
 	return &dtos.CheckoutDTO{
-		OrderId: order.Id,
+		OrderId:     order.Id,
 		PaymentLink: &link,
 		Method:      &method,
 		Amount:      &total,

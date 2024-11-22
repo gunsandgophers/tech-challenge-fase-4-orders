@@ -60,7 +60,8 @@ func TestRestoreOrderWithItems(t *testing.T) {
 		ORDER_PAYMENT_PENDING,
 		ORDER_PREPARATION_AWAITING,
 	)
-	order.AddItem(CreateProduct(
+	order.AddItem(RestoreProduct(
+		uuid.NewString(),
 		"Product 4",
 		"Meal",
 		10.3,

@@ -44,19 +44,6 @@ func (r *RegiterCustomerRequest) Validate() error {
 	return nil
 }
 
-func (p *ProductRequest) ValidateProduct() error {
-	if p.Name == "" {
-		return errParamIsRequired("name", "string")
-	}
-	if p.Category == "" {
-		return errParamIsRequired("category", "string")
-	}
-	if p.Price == 0 {
-		return errParamIsRequired("price", "float64")
-	}
-	return nil
-}
-
 func (r *CheckoutRequest) Validate() error {
 	if len(r.ProductsIds) == 0 {
 		return errParamCantBeEmpty("products_ids", "string")

@@ -3,32 +3,29 @@ package orders
 import (
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
-	"tech-challenge-fase-1/internal/core/events"
 	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/services"
 )
 
 type CheckoutOrderUseCase struct {
-	orderRepository     repositories.OrderRepositoryInterface
+	orderRepository repositories.OrderRepositoryInterface
 	customerService services.CustomerService
-	productRepository repositories.ProductRepositoryInterface
-	paymentGateway      services.PaymentGatewayInterface
-	commandEventManager events.ManagerEvent
+	// productRepository repositories.ProductRepositoryInterface
+	paymentGateway services.PaymentGatewayInterface
 }
 
 func NewCheckoutOrderUseCase(
 	orderRepository repositories.OrderRepositoryInterface,
 	customerService services.CustomerService,
-	productRepository repositories.ProductRepositoryInterface,
+	//TOOD criar um servico para retornar o produto
+	// productRepository repositories.ProductRepositoryInterface,
 	paymentGateway services.PaymentGatewayInterface,
-	commandEventManager events.ManagerEvent,
 ) *CheckoutOrderUseCase {
 	return &CheckoutOrderUseCase{
-		orderRepository:     orderRepository,
-		customerService:     customerService,
-		productRepository:     productRepository,
-		paymentGateway:      paymentGateway,
-		commandEventManager: commandEventManager,
+		orderRepository: orderRepository,
+		customerService: customerService,
+		// productRepository:     productRepository,
+		paymentGateway: paymentGateway,
 	}
 }
 
@@ -45,13 +42,15 @@ func (c *CheckoutOrderUseCase) validateCustomerId(customerId *string) error {
 
 func (c *CheckoutOrderUseCase) fetchProducts(productsIds []string) ([]*entities.Product, error) {
 	products := []*entities.Product{}
-	for _, productId := range productsIds {
-		product, err := c.productRepository.FindProductByID(productId)
-		if err != nil {
-			return nil, err
-		}
-		products = append(products, product)
-	}
+
+	//TODO pegar os produtos pro um servico externo
+	// for _, productId := range productsIds {
+	// 	product, err := c.productRepository.FindProductByID(productId)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	products = append(products, product)
+	// }
 	return products, nil
 }
 
