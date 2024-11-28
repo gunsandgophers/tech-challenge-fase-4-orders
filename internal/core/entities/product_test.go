@@ -20,7 +20,7 @@ func TestRestoreProduct(t *testing.T) {
 	if product.GetName() != name {
 		t.Errorf("Error name customer")
 	}
-	if product.GetCategory() != category {
+	if product.GetCategory().String() != category.String() {
 		t.Errorf("Error category customer")
 	}
 	if product.GetPrice() != price {

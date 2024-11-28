@@ -1,10 +1,12 @@
 package entities
 
 import (
+	"tech-challenge-fase-1/internal/core/errors"
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateOpenOrderAsAnonymous(t *testing.T) {
@@ -87,7 +89,7 @@ func TestRestoreOrderWithItems(t *testing.T) {
 		t.Errorf("Order Items len different of 4")
 	}
 	total := float64((34.9 * 3.0) + (10.0 * 1.0) + (20.5 * 5.0) + (10.3 * 2.0))
-	if int32(order.GetTotal() * 100) != int32(total * 100) {
+	if int32(order.GetTotal()*100) != int32(total*100) {
 		t.Errorf("Order Items total error")
 	}
 	if product0 != nil {
@@ -96,4 +98,86 @@ func TestRestoreOrderWithItems(t *testing.T) {
 	if product1.GetProductName() != "Product 1" {
 		t.Errorf("Returned a different product")
 	}
+}
+
+func TestRestoreOrderStatusAwaitingPayment(t *testing.T) {
+	customerId := "customer-id"
+
+	order := CreateOpenOrder(
+		&customerId,
+	)
+	order.AddItem(RestoreProduct(
+		uuid.NewString(),
+		"Product 4",
+		"Meal",
+		10.3,
+		"Some Description",
+		"Some Image",
+	), 2)
+
+	order.AwaitingPayment()
+
+	assert.Equal(t, order.GetPaymentStatus(), ORDER_PAYMENT_AWAITING_PAYMENT)
+}
+
+func TestRestoreOrderStatusPaymentReceived(t *testing.T) {
+	customerId := "customer-id"
+
+	order := CreateOpenOrder(
+		&customerId,
+	)
+	order.AddItem(RestoreProduct(
+		uuid.NewString(),
+		"Product 4",
+		"Meal",
+		10.3,
+		"Some Description",
+		"Some Image",
+	), 2)
+
+	order.PaymentReceived()
+
+	assert.Equal(t, order.GetPaymentStatus(), ORDER_PAYMENT_PAID)
+	assert.Equal(t, order.GetPreparationStatus(), ORDER_PREPARATION_RECEIVED)
+}
+
+func TestRestoreOrderStatusPaymentRejected(t *testing.T) {
+	customerId := "customer-id"
+
+	order := CreateOpenOrder(
+		&customerId,
+	)
+	order.AddItem(RestoreProduct(
+		uuid.NewString(),
+		"Product 4",
+		"Meal",
+		10.3,
+		"Some Description",
+		"Some Image",
+	), 2)
+
+	order.PaymentRejected()
+
+	assert.Equal(t, order.GetPaymentStatus().String(), ORDER_PAYMENT_REJECTED.String())
+	assert.Equal(t, order.GetPreparationStatus().String(), ORDER_PREPARATION_CANCELED.String())
+}
+
+func TestRestoreOrderWithErr(t *testing.T) {
+	customerId := "customer-id"
+
+	order := CreateOpenOrder(
+		&customerId,
+	)
+	order.AddItem(RestoreProduct(
+		uuid.NewString(),
+		"Product 4",
+		"Meal",
+		10.3,
+		"Some Description",
+		"Some Image",
+	), 2)
+
+	err := order.SetPreparationStatus("Banana")
+
+	assert.Error(t, err, errors.ErrInvalidPreparationStatus.Error())
 }

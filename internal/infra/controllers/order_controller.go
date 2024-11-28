@@ -11,20 +11,23 @@ import (
 
 type OrderController struct {
 	orderRepository       repositories.OrderRepositoryInterface
-	customerService       services.CustomerService
+	customerService       services.CustomerServiceInterface
+	productService        services.ProductServiceInterface
 	paymentGateway        services.PaymentGatewayInterface
 	orderDisplayListQuery queries.OrderDisplayListQueryInterface
 }
 
 func NewOrderController(
 	orderRepository repositories.OrderRepositoryInterface,
-	customerService services.CustomerService,
+	customerService services.CustomerServiceInterface,
+	productService services.ProductServiceInterface,
 	paymentGateway services.PaymentGatewayInterface,
 	orderDisplayListQuery queries.OrderDisplayListQueryInterface,
 ) *OrderController {
 	return &OrderController{
 		orderRepository:       orderRepository,
 		customerService:       customerService,
+		productService:        productService,
 		paymentGateway:        paymentGateway,
 		orderDisplayListQuery: orderDisplayListQuery,
 	}
@@ -52,6 +55,7 @@ func (cc *OrderController) Checkout(c httpserver.HTTPContext) {
 	checkoutUseCase := orders.NewCheckoutOrderUseCase(
 		cc.orderRepository,
 		cc.customerService,
+		cc.productService,
 		cc.paymentGateway,
 	)
 	checkout, err := checkoutUseCase.Execute(request.CustomerId, request.ProductsIds)

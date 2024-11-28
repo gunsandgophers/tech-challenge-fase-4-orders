@@ -23,3 +23,32 @@ func TestNewCPFInvalid(t *testing.T) {
 		t.Errorf("Create a invalid CPF")
 	}
 }
+
+func TestNewCPFEmpyt(t *testing.T) {
+	digits := ""
+	if cpf, err := NewCPF(digits); err == nil || cpf != nil {
+		t.Errorf("Create a invalid CPF")
+	}
+}
+
+func TestNewCPFWithIncompleteNumbers(t *testing.T) {
+	digits := "980.727"
+	if cpf, err := NewCPF(digits); err == nil || cpf != nil {
+		t.Errorf("Create a invalid CPF")
+	}
+}
+
+func TestNewCPFWithAllDigitsAreTheSame(t *testing.T) {
+	digits := "111.111.111-11"
+	if cpf, err := NewCPF(digits); err == nil || cpf != nil {
+		t.Errorf("Create a invalid CPF")
+	}
+}
+
+func TestNewCPFWithInvalid2(t *testing.T) {
+	digits := "123.456.789-10"
+	if cpf, err := NewCPF(digits); err == nil || cpf != nil {
+		t.Errorf("Create a invalid CPF")
+	}
+}
+

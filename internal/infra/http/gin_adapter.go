@@ -1,6 +1,8 @@
 package httpserver
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -74,4 +76,8 @@ func (g *GinHTTPServerAdapter) DELETE(path string, callback func(HTTPContext)) {
 			callback(c)
 		},
 	)
+}
+
+func (g *GinHTTPServerAdapter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	g.Engine.ServeHTTP(w, req)
 }

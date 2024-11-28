@@ -29,6 +29,6 @@ func (uc *PreparationStatusUpdateUseCase) Execute(
 	if err := order.SetPreparationStatus(preparationStatus); err != nil {
 		return err
 	}
-	uc.orderRepository.Update(order)
-	return nil
+	
+	return uc.orderRepository.Update(order)
 }

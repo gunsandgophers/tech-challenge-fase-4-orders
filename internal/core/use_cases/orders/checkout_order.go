@@ -9,23 +9,22 @@ import (
 
 type CheckoutOrderUseCase struct {
 	orderRepository repositories.OrderRepositoryInterface
-	customerService services.CustomerService
-	// productRepository repositories.ProductRepositoryInterface
-	paymentGateway services.PaymentGatewayInterface
+	customerService services.CustomerServiceInterface
+	productService  services.ProductServiceInterface
+	paymentGateway  services.PaymentGatewayInterface
 }
 
 func NewCheckoutOrderUseCase(
 	orderRepository repositories.OrderRepositoryInterface,
-	customerService services.CustomerService,
-	//TOOD criar um servico para retornar o produto
-	// productRepository repositories.ProductRepositoryInterface,
+	customerService services.CustomerServiceInterface,
+	productService services.ProductServiceInterface,
 	paymentGateway services.PaymentGatewayInterface,
 ) *CheckoutOrderUseCase {
 	return &CheckoutOrderUseCase{
 		orderRepository: orderRepository,
 		customerService: customerService,
-		// productRepository:     productRepository,
-		paymentGateway: paymentGateway,
+		productService:  productService,
+		paymentGateway:  paymentGateway,
 	}
 }
 
@@ -43,14 +42,13 @@ func (c *CheckoutOrderUseCase) validateCustomerId(customerId *string) error {
 func (c *CheckoutOrderUseCase) fetchProducts(productsIds []string) ([]*entities.Product, error) {
 	products := []*entities.Product{}
 
-	//TODO pegar os produtos pro um servico externo
-	// for _, productId := range productsIds {
-	// 	product, err := c.productRepository.FindProductByID(productId)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	products = append(products, product)
-	// }
+	for _, productId := range productsIds {
+		product, err := c.productService.FindProductByID(productId)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
 	return products, nil
 }
 

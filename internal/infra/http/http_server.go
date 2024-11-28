@@ -1,5 +1,7 @@
 package httpserver
 
+import "net/http"
+
 type HTTPServer interface {
 	SetTrustedProxies(trustedProxies []string) error
 	Run(addr ...string) error
@@ -12,6 +14,7 @@ type HTTPRoutes interface {
 	PATCH(string, HTTPHandlerFunc) HTTPRoutes
 	PUT(string, HTTPHandlerFunc) HTTPRoutes
 	SetBasePath(basePath string) HTTPRoutes
+	ServeHTTP(w http.ResponseWriter, req *http.Request)
 }
 
 type HTTPContext interface {

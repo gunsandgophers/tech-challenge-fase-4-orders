@@ -14,6 +14,7 @@ func registerRouters(app *APIApp) {
 	orderController := controllers.NewOrderController(
 		app.orderRepository,
 		app.customerService,
+		app.productService,
 		app.mercadoPagoGateway,
 		app.orderDisplayListQuery,
 	)

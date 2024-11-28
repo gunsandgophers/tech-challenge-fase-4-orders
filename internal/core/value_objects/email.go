@@ -1,9 +1,10 @@
 package valueobjects
 
 import (
-	"errors"
 	"regexp"
+	"tech-challenge-fase-1/internal/core/errors"
 )
+
 
 type Email struct {
 	value string
@@ -12,7 +13,7 @@ type Email struct {
 func NewEmail(value string) (*Email, error) {
 	email := &Email{value: value}
 	if !email.validate() {
-		return nil, errors.New("Invalid Email")
+		return nil, errors.ErrInvalidEmail
 	}
 	return email, nil
 }

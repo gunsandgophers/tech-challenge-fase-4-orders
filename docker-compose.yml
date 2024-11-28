@@ -61,19 +61,3 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  # migrate:
-  #   image: migrate/migrate
-  #   restart: on-failure:5
-  #   command:
-  #     [
-  #       "-database",
-  #       "postgres://tech-challenge-fase:tech-challenge-fase@db/tech-challenge-fase?sslmode=disable",
-  #       "-path",
-  #       "/migrations",
-  #       "up",
-  #     ]
-  #   volumes:
-  #     - ./migrations:/migrations
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy

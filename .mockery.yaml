@@ -1,0 +1,11 @@
+with-expecter: True
+inpackage: True
+dir: "{{.InterfaceDir}}"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: "{{.PackageName}}"
+filename: "{{.InterfaceNameSnake}}_mock.go"
+all: True
+packages:
+  tech-challenge-fase-1:
+    config:
+      recursive: True

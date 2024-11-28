@@ -44,10 +44,6 @@ func (p *Product) GetName() string {
 	return p.name
 }
 
-func (p *Product) SetName(name string) {
-	p.name = name
-}
-
 func (p *Product) GetId() string {
 	return p.id
 }
@@ -56,30 +52,14 @@ func (p *Product) GetCategory() ProductCategory {
 	return p.category
 }
 
-func (p *Product) SetCategory(category ProductCategory) {
-	p.category = category
-}
-
 func (p *Product) GetPrice() float64 {
 	return p.price
-}
-
-func (p *Product) SetPrice(price float64) {
-	p.price = price
 }
 
 func (p *Product) GetDescription() string {
 	return p.description
 }
 
-func (p *Product) SetDescription(description string) {
-	p.description = description
-}
-
 func (p *Product) GetImage() string {
 	return p.image
-}
-
-func (p *Product) SetImage(image string) {
-	p.image = image
 }
