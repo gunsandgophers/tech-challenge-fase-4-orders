@@ -37,16 +37,3 @@ func (a *AwsCustomerService) GetCustomerById(id string) (*entities.Customer, err
 	}
 	return entities.RestoreCustomer(user.Id, user.Name, user.Email, user.Username)
 }
-
-func (a *AwsCustomerService) CreateCustomer(customer *entities.Customer) (*entities.Customer, error) {
-	cognitoCreateUser := &CognitoCreateUser{
-		Username: customer.GetCPF().Value(),
-		Name: customer.GetName(),
-		Email: customer.GetEmail().Value(),
-	}
-	user, err := a.serviceClient.CreateUser(cognitoCreateUser)
-	if err != nil {
-		return nil, err
-	}
-	return entities.RestoreCustomer(user.Id, user.Name, user.Email, user.Username)
-}

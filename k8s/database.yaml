@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tech-challenge-fase-4-order-postgres
+  labels:
+    app: tech-challenge-fase-4-order-postgres
+spec:
+  ports:
+  - port: 5432
+    name: tech-challenge-fase-4-order-postgres
+  clusterIP: None
+  selector:
+    app: tech-challenge-fase-4-order-postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tech-challenge-fase-4-order-postgres
+spec:
+  selector:
+    matchLabels:
+      app: tech-challenge-fase-4-order-postgres
+  serviceName: "tech-challenge-fase-4-order-postgres"
+  replicas: 1
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: tech-challenge-fase-4-order-postgres
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: tech-challenge-fase-4-order-postgres
+        image: postgres:16.3
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: tech-challenge-fase-4-order-postgres-storage
+          mountPath: /var/lib/postgresql/data
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: tech-challenge-fase-4-order-api-config
+              key: DB_NAME
+        - name: PGDATA
+          valueFrom:
+            configMapKeyRef:
+              name: tech-challenge-fase-4-order-api-config
+              key: DB_DATA
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: tech-challenge-fase-4-order-secrets
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tech-challenge-fase-4-order-secrets
+              key: DB_PASSWORD
+      volumes:
+      - name: tech-challenge-fase-4-order-postgres-storage
+        persistentVolumeClaim:
+          claimName: tech-challenge-fase-4-order-postgres-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tech-challenge-fase-4-order-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: csi-hostpath-sc

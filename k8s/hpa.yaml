@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: tech-challenge-hpa
+  name: tech-challenge-fase-4-order-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: tech-challenge-deployment
+    name: tech-challenge-fase-4-order-deployment
   minReplicas: 1
   maxReplicas: 2
   metrics:

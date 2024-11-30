@@ -1,6 +1,7 @@
 package app
 
 import (
+	"net/http"
 	corequeries "tech-challenge-fase-1/internal/core/queries"
 	corerepositories "tech-challenge-fase-1/internal/core/repositories"
 	coreservices "tech-challenge-fase-1/internal/core/services"
@@ -66,7 +67,7 @@ func (app *APIApp) initExternalServices() {
 		config.AWS_USER_POOL_ID,
 	)
 
-	app.productService = services.NewProductService()
+	app.productService = services.NewProductService(http.DefaultClient)
 
 	if err != nil {
 		panic(err)

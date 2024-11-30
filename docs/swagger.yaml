@@ -21,19 +21,6 @@ definitions:
       preparation_status:
         type: string
     type: object
-  controllers.ProductRequest:
-    properties:
-      category:
-        type: string
-      description:
-        type: string
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-    type: object
   dtos.CheckoutDTO:
     properties:
       amount:
@@ -81,21 +68,6 @@ definitions:
         type: string
       payment_status:
         type: string
-    type: object
-  dtos.ProductDTO:
-    properties:
-      category:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
     type: object
 externalDocs:
   description: OpenAPI
@@ -267,138 +239,6 @@ paths:
       summary: Process order payment
       tags:
       - orders
-  /product/:
-    post:
-      consumes:
-      - application/json
-      description: register the product information
-      parameters:
-      - description: Insert Product
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.ProductRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dtos.ProductDTO'
-        "400":
-          description: when bad request
-          schema:
-            type: string
-        "500":
-          description: when create product process error
-          schema:
-            type: string
-      summary: Create a product
-      tags:
-      - products
-  /product/{category}/:
-    get:
-      consumes:
-      - application/json
-      description: List a set of products information over followed categories
-      parameters:
-      - description: Product category
-        in: path
-        name: category
-        required: true
-        type: string
-      - description: Page defaults to 1
-        in: query
-        name: page
-        type: string
-      - description: Size defaults to 50
-        in: query
-        name: size
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/dtos.ProductDTO'
-            type: array
-        "400":
-          description: when bad request
-          schema:
-            type: string
-        "500":
-          description: when list products process error
-          schema:
-            type: string
-      summary: List products
-      tags:
-      - products
-  /product/{id}/:
-    delete:
-      consumes:
-      - application/json
-      description: remove the product information
-      parameters:
-      - description: Product identifier
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: when when bad request
-          schema:
-            type: string
-        "500":
-          description: when delete product process error
-          schema:
-            type: string
-      summary: Delete a product
-      tags:
-      - products
-    put:
-      consumes:
-      - application/json
-      description: change the product information
-      parameters:
-      - description: Product identifier
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Product object
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.ProductRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dtos.ProductDTO'
-        "400":
-          description: when bad request
-          schema:
-            type: string
-        "500":
-          description: when update product process error
-          schema:
-            type: string
-      summary: Update a product
-      tags:
-      - products
 securityDefinitions:
   BasicAuth:
     type: basic

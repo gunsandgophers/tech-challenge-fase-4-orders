@@ -8,5 +8,4 @@ import (
 type CustomerServiceInterface interface {
 	GetCustomerById(id string) (*entities.Customer, error)
 	GetCustomerByCPF(cpf *valueobjects.CPF) (*entities.Customer, error)
-	CreateCustomer(customer *entities.Customer) (*entities.Customer, error)
 }
