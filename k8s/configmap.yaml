@@ -6,4 +6,4 @@ data:
   DB_HOST: "tech-challenge-fase-4-order-postgres"
   DB_NAME: "tech-challenge-fase-4-order"
   DB_DATA: "/var/lib/postgresql/data"
-  SERVICE_PRODUCTS_URL: "tech-challenge-fase-4-products"
+  SERVICE_PRODUCTS_URL: "tech-challenge-fase-4-products-deployment"
