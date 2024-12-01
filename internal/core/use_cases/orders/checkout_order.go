@@ -11,20 +11,20 @@ type CheckoutOrderUseCase struct {
 	orderRepository repositories.OrderRepositoryInterface
 	customerService services.CustomerServiceInterface
 	productService  services.ProductServiceInterface
-	paymentGateway  services.PaymentGatewayInterface
+	paymentService services.PaymentServiceInterface
 }
 
 func NewCheckoutOrderUseCase(
 	orderRepository repositories.OrderRepositoryInterface,
 	customerService services.CustomerServiceInterface,
 	productService services.ProductServiceInterface,
-	paymentGateway services.PaymentGatewayInterface,
+	paymentService services.PaymentServiceInterface,
 ) *CheckoutOrderUseCase {
 	return &CheckoutOrderUseCase{
 		orderRepository: orderRepository,
 		customerService: customerService,
 		productService:  productService,
-		paymentGateway:  paymentGateway,
+		paymentService:  paymentService,
 	}
 }
 
@@ -68,11 +68,15 @@ func (c *CheckoutOrderUseCase) Execute(
 		order.AddItem(product, 1)
 	}
 
-	order.AwaitingPayment()
-	checkout, err := c.paymentGateway.Execute(
-		dtos.NewOrderDTOFromEntity(order),
-		dtos.PIX,
-	)
+	// order.AwaitingPayment()
+	// checkout, err := c.paymentGateway.Execute(
+	// 	dtos.NewOrderDTOFromEntity(order),
+	// 	dtos.PIX,
+	// )
+	// if err != nil {
+	// 	return nil, err
+	// }
+	checkout, err := c.paymentService.CreatePayment(order.GetId(), order.GetTotal())
 	if err != nil {
 		return nil, err
 	}
