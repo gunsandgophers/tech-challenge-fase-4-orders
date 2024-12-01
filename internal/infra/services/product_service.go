@@ -2,9 +2,9 @@ package services
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
+	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
 	"tech-challenge-fase-1/internal/infra/config"
 )
@@ -21,8 +21,12 @@ func NewProductService(client *http.Client) *ProductService {
 
 func (p *ProductService) FindProductByID(id string) (*entities.Product, error) {
 
-	resp, err := p.client.Get(fmt.Sprint(config.SERVICE_PRODUCT_URL, "/api/v1/product/", id))
+	req, err := http.NewRequest("GET", "http://"+config.SERVICE_PRODUCT_URL+"/api/v1/product/"+id, nil)
+	if err != nil {
+		return nil, err
+	}
 
+	resp, err := p.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -33,15 +37,22 @@ func (p *ProductService) FindProductByID(id string) (*entities.Product, error) {
 		return nil, err
 	}
 
-	var body map[string]any
+	var body dtos.ProductResponseDTO
 
 	err = json.Unmarshal(bodyBytes, &body)
 
-	product := body["product"].(entities.Product)
+	product := entities.RestoreProduct(
+		body.Product.ID,
+		body.Product.Name,
+		entities.ProductCategory(body.Product.Category),
+		body.Product.Price,
+		body.Product.Description,
+		body.Product.Image,
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &product, nil
+	return product, nil
 }
