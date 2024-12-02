@@ -4,8 +4,8 @@ import (
 	"errors"
 	"tech-challenge-fase-1/internal/core/entities"
 	coreerrors "tech-challenge-fase-1/internal/core/errors"
-	"tech-challenge-fase-1/internal/core/repositories"
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
+	"tech-challenge-fase-1/internal/tests/mocks"
 	"testing"
 
 	"github.com/google/uuid"
@@ -22,7 +22,7 @@ func TestPreparationStatusUpdateUseCase(t *testing.T) {
 		entities.ORDER_PREPARATION_AWAITING,
 	)
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
 
 	usecase := NewPreparationStatusUpdateUseCase(orderRepository)
 
@@ -40,7 +40,7 @@ func TestPreparationStatusUpdateUseCaseWithFindOrderByIDErr(t *testing.T) {
 
 	orderId := uuid.NewString()
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
 
 	usecase := NewPreparationStatusUpdateUseCase(orderRepository)
 
@@ -61,7 +61,7 @@ func TestPreparationStatusUpdateUseCaseWithStatusIncorrect(t *testing.T) {
 		entities.ORDER_PREPARATION_AWAITING,
 	)
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
 
 	usecase := NewPreparationStatusUpdateUseCase(orderRepository)
 
@@ -82,7 +82,7 @@ func TestPreparationStatusUpdateUseCaseWithUpdateErr(t *testing.T) {
 		entities.ORDER_PREPARATION_AWAITING,
 	)
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
 
 	usecase := NewPreparationStatusUpdateUseCase(orderRepository)
 

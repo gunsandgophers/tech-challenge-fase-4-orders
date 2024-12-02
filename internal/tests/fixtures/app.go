@@ -8,7 +8,7 @@ import (
 	httpserver "tech-challenge-fase-1/internal/infra/http"
 )
 
-func NewAPIAppBDDTest(
+func NewAPIAppIntegrationTest(
 	orderRepository repositories.OrderRepositoryInterface,
 	orderDisplayListQuery queries.OrderDisplayListQueryInterface,
 	customerService services.CustomerServiceInterface,

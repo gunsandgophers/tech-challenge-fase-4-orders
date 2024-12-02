@@ -11,10 +11,10 @@ WORKDIR /app
 COPY . .
 
 RUN go mod download
-RUN go get github.com/githubnemo/CompileDaemon
-RUN go install github.com/githubnemo/CompileDaemon
 
-ENTRYPOINT CompileDaemon --build="go build -o build/main" --command=./build/main
+RUN go build -o build/main
+
+ENTRYPOINT ./build/main
 
 # Optional:
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.

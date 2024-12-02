@@ -4,8 +4,7 @@ import (
 	"errors"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
-	"tech-challenge-fase-1/internal/core/repositories"
-	"tech-challenge-fase-1/internal/core/services"
+	"tech-challenge-fase-1/internal/tests/mocks"
 	"testing"
 
 	"github.com/google/uuid"
@@ -25,10 +24,10 @@ func TestCheckoutOrderUseCase(t *testing.T) {
 
 	checkout := &dtos.CheckoutDTO{}
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
-	customerService := &services.MockCustomerService{}
-	productService := &services.MockProductServiceInterface{}
-	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := &mocks.MockPaymentServiceInterface{}
 
 	productService.On("FindProductByID", productsIds[0]).Return(product, nil).Once()
 	paymentService.On("CreatePayment", mock.Anything, mock.Anything).Return(checkout, nil).Once()
@@ -62,10 +61,10 @@ func TestCheckoutOrderUseCaseWithCustomer(t *testing.T) {
 
 	checkout := &dtos.CheckoutDTO{}
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
-	customerService := &services.MockCustomerService{}
-	productService := &services.MockProductServiceInterface{}
-	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := &mocks.MockPaymentServiceInterface{}
 
 	customerService.On("GetCustomerById", customerId).Return(customer, nil).Once()
 	productService.On("FindProductByID", productsIds[0]).Return(product, nil).Once()
@@ -87,10 +86,10 @@ func TestCheckoutOrderUseCaseWithCustomerErr(t *testing.T) {
 	productsIds := []string{uuid.NewString()}
 	customerId := uuid.NewString()
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
-	customerService := &services.MockCustomerService{}
-	productService := &services.MockProductServiceInterface{}
-	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := &mocks.MockPaymentServiceInterface{}
 
 	customerService.On("GetCustomerById", customerId).Return(nil, errors.New("error")).Once()
 
@@ -108,10 +107,10 @@ func TestCheckoutOrderUseCaseWithProductErr(t *testing.T) {
 
 	productsIds := []string{uuid.NewString()}
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
-	customerService := &services.MockCustomerService{}
-	productService := &services.MockProductServiceInterface{}
-	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := &mocks.MockPaymentServiceInterface{}
 
 	productService.On("FindProductByID", productsIds[0]).Return(nil, errors.New("error")).Once()
 
@@ -135,10 +134,10 @@ func TestCheckoutOrderUseCaseWithPaymenteErr(t *testing.T) {
 		1337, "Uma descricao", "",
 	)
 
-	orderRepository := &repositories.MockOrderRepositoryInterface{}
-	customerService := &services.MockCustomerService{}
-	productService := &services.MockProductServiceInterface{}
-	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := &mocks.MockPaymentServiceInterface{}
 
 	productService.On("FindProductByID", productsIds[0]).Return(product, nil).Once()
 	paymentService.On("CreatePayment", mock.Anything, mock.Anything).Return((*dtos.CheckoutDTO)(nil), errors.New("error")).Once()

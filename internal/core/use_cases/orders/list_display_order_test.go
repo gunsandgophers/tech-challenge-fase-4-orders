@@ -3,7 +3,7 @@ package orders
 import (
 	"errors"
 	"tech-challenge-fase-1/internal/core/dtos"
-	"tech-challenge-fase-1/internal/core/queries"
+	"tech-challenge-fase-1/internal/tests/mocks"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,7 +11,7 @@ import (
 
 func TestOrderDisplayListUseCase(t *testing.T) {
 
-	mockOrderDisplayListQuery := &queries.MockOrderDisplayListQueryInterface{}
+	mockOrderDisplayListQuery := mocks.NewMockOrderDisplayListQueryInterface(t)
 
 	useCase := NewOrderDisplayListUseCase(mockOrderDisplayListQuery)
 
@@ -24,7 +24,7 @@ func TestOrderDisplayListUseCase(t *testing.T) {
 
 func TestOrderDisplayListUseCaseWithErr(t *testing.T) {
 
-	mockOrderDisplayListQuery := &queries.MockOrderDisplayListQueryInterface{}
+	mockOrderDisplayListQuery := mocks.NewMockOrderDisplayListQueryInterface(t)
 
 	useCase := NewOrderDisplayListUseCase(mockOrderDisplayListQuery)
 

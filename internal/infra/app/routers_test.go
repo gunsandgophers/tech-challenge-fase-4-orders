@@ -9,11 +9,9 @@ import (
 	"strings"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
-	"tech-challenge-fase-1/internal/core/queries"
-	"tech-challenge-fase-1/internal/core/repositories"
-	"tech-challenge-fase-1/internal/core/services"
 	valueobjects "tech-challenge-fase-1/internal/core/value_objects"
 	httpserver "tech-challenge-fase-1/internal/infra/http"
+	"tech-challenge-fase-1/internal/tests/mocks"
 	"testing"
 	"time"
 
@@ -21,40 +19,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// func TestHelloWorld(t *testing.T) {
-// 	httpServer := httpserver.NewGinHTTPServerAdapter()
-// 	customerService := services.NewMockCustomerService(t)
-// 	productService := services.NewMockProductServiceInterface(t)
-// 	paymentService := &services.MockPaymentServiceInterface{}
-// 	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
-// 	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
-// 	app := NewAPIApp(
-// 		httpServer,
-// 		orderRepository,
-// 		orderDisplayListQuery,
-// 		customerService,
-// 		productService,
-// 		paymentService,
-// 	)
-//
-// 	w := httptest.NewRecorder()
-//
-// 	msg, _ := json.Marshal(httpserver.Payload{"msg": "Hello World! :)"})
-//
-// 	req, _ := http.NewRequest("GET", "/api/v1/", strings.NewReader(""))
-// 	app.HTTPServer().ServeHTTP(w, req)
-//
-// 	assert.Equal(t, 200, w.Code)
-// 	assert.Equal(t, string(msg), w.Body.String())
-// }
-
 func TestGetOrderDisplay(t *testing.T) {
 	httpServer := httpserver.NewGinHTTPServerAdapter()
-	customerService := services.NewMockCustomerService(t)
-	productService := services.NewMockProductServiceInterface(t)
-	paymentService := &services.MockPaymentServiceInterface{}
-	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
-	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := mocks.NewMockPaymentServiceInterface(t)
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	orderDisplayListQuery := mocks.NewMockOrderDisplayListQueryInterface(t)
 
 	orderDisplay := []*dtos.OrderDisplayDTO{
 		{
@@ -116,11 +87,11 @@ func TestGetOrderDisplay(t *testing.T) {
 
 func TestUpdatePreparationStatus(t *testing.T) {
 	httpServer := httpserver.NewGinHTTPServerAdapter()
-	customerService := services.NewMockCustomerService(t)
-	productService := services.NewMockProductServiceInterface(t)
-	paymentService := &services.MockPaymentServiceInterface{}
-	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
-	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := &mocks.MockPaymentServiceInterface{}
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	orderDisplayListQuery := mocks.NewMockOrderDisplayListQueryInterface(t)
 
 	order := entities.RestoreOrder(
 		uuid.NewString(), nil,
