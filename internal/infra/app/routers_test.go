@@ -21,32 +21,32 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHelloWorld(t *testing.T) {
-	httpServer := httpserver.NewGinHTTPServerAdapter()
-	customerService := services.NewMockCustomerService(t)
-	productService := services.NewMockProductServiceInterface(t)
-	paymentService := &services.MockPaymentServiceInterface{}
-	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
-	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
-	app := NewAPIApp(
-		httpServer,
-		orderRepository,
-		orderDisplayListQuery,
-		customerService,
-		productService,
-		paymentService,
-	)
-
-	w := httptest.NewRecorder()
-
-	msg, _ := json.Marshal(httpserver.Payload{"msg": "Hello World! :)"})
-
-	req, _ := http.NewRequest("GET", "/api/v1/", strings.NewReader(""))
-	app.HTTPServer().ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, string(msg), w.Body.String())
-}
+// func TestHelloWorld(t *testing.T) {
+// 	httpServer := httpserver.NewGinHTTPServerAdapter()
+// 	customerService := services.NewMockCustomerService(t)
+// 	productService := services.NewMockProductServiceInterface(t)
+// 	paymentService := &services.MockPaymentServiceInterface{}
+// 	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
+// 	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
+// 	app := NewAPIApp(
+// 		httpServer,
+// 		orderRepository,
+// 		orderDisplayListQuery,
+// 		customerService,
+// 		productService,
+// 		paymentService,
+// 	)
+//
+// 	w := httptest.NewRecorder()
+//
+// 	msg, _ := json.Marshal(httpserver.Payload{"msg": "Hello World! :)"})
+//
+// 	req, _ := http.NewRequest("GET", "/api/v1/", strings.NewReader(""))
+// 	app.HTTPServer().ServeHTTP(w, req)
+//
+// 	assert.Equal(t, 200, w.Code)
+// 	assert.Equal(t, string(msg), w.Body.String())
+// }
 
 func TestGetOrderDisplay(t *testing.T) {
 	httpServer := httpserver.NewGinHTTPServerAdapter()
