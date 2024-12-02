@@ -44,6 +44,10 @@ func (app *APIApp) configRoutes() {
 	registerRouters(app)
 }
 
+func (app *APIApp) HTTPServer() httpserver.HTTPServer {
+	return app.httpServer
+}
+
 func (app *APIApp) Run() {
 	app.httpServer.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

@@ -68,14 +68,6 @@ func (c *CheckoutOrderUseCase) Execute(
 		order.AddItem(product, 1)
 	}
 
-	// order.AwaitingPayment()
-	// checkout, err := c.paymentGateway.Execute(
-	// 	dtos.NewOrderDTOFromEntity(order),
-	// 	dtos.PIX,
-	// )
-	// if err != nil {
-	// 	return nil, err
-	// }
 	checkout, err := c.paymentService.CreatePayment(order.GetId(), order.GetTotal())
 	if err != nil {
 		return nil, err

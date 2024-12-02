@@ -12,6 +12,8 @@ import (
 	"tech-challenge-fase-1/internal/core/queries"
 	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/services"
+	"tech-challenge-fase-1/internal/infra/app"
+	"tech-challenge-fase-1/internal/tests/fixtures"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -36,7 +38,7 @@ func thereAreProduct(ctx context.Context, category string) (context.Context, err
 		productCategory,
 		13.37, "Uma descricao ai", "")
 
-	server := ctx.Value(appCtxKey{}).(*APIApp)
+	server := ctx.Value(appCtxKey{}).(*app.APIApp)
 	server.productService.(*services.MockProductServiceInterface).
 		On("FindProductByID", product.GetId()).Return(product, nil).Once()
 
@@ -58,7 +60,7 @@ func iOpenOrder(ctx context.Context) (context.Context, error) {
 	sidedishes, _ := ctx.Value(sidedishesCtxKey{}).(*entities.Product)
 	dessets, _ := ctx.Value(dessetsCtxKey{}).(*entities.Product)
 
-	server := ctx.Value(appCtxKey{}).(*APIApp)
+	server := ctx.Value(appCtxKey{}).(*app.APIApp)
 
 	paymentLink := ""
 	pix := dtos.PIX
@@ -125,20 +127,24 @@ func thereShouldOpenedOrder(ctx context.Context, items int) error {
 }
 
 func TestFeatures(t *testing.T) {
-
-	server := NewAPIAppTest(
-		services.NewMockCustomerService(t),
-		services.NewMockProductServiceInterface(t),
-		services.NewMockPaymentGatewayInterface(t),
-		repositories.NewMockOrderRepositoryInterface(t),
-		queries.NewMockOrderDisplayListQueryInterface(t),
+	customerService := services.NewMockCustomerService(t)
+	productService := services.NewMockProductServiceInterface(t)
+	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
+	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
+	server := fixtures.NewAPIAppBDDTest(
+		orderRepository,
+		orderDisplayListQuery,
+		customerService,
+		productService,
+		paymentService,
 	)
 
 	suite := godog.TestSuite{
 		ScenarioInitializer: InitializeScenario,
 		Options: &godog.Options{
 			Format:         "pretty",
-			Paths:          []string{"../../../features"},
+      Paths:    []string{"features"},
 			DefaultContext: context.WithValue(context.Background(), appCtxKey{}, server),
 			TestingT:       t, // Testing instance that will run subtests.
 		},
