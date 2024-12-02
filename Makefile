@@ -26,10 +26,13 @@ mock/create:
 	docker run -v "$PWD":/src -w /src vektra/mockery --all
 
 test:
-	go test ./...
+	go test ./internal/core/...
 
 test/coverage:
-	go test ./... -coverprofile=cover.out
+	go test ./internal/core/... -coverprofile=cover.out
 
 test/output:
 	go tool cover -html=cover.out
+
+test/bdd:
+	go test -v ./internal/tests/bdd/...
