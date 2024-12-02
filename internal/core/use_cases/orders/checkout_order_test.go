@@ -28,15 +28,15 @@ func TestCheckoutOrderUseCase(t *testing.T) {
 	orderRepository := &repositories.MockOrderRepositoryInterface{}
 	customerService := &services.MockCustomerService{}
 	productService := &services.MockProductServiceInterface{}
-	paymentGateway := &services.MockPaymentGatewayInterface{}
+	paymentService := &services.MockPaymentServiceInterface{}
 
 	productService.On("FindProductByID", productsIds[0]).Return(product, nil).Once()
-	paymentGateway.On("Execute", mock.Anything, dtos.PIX).Return(checkout, nil).Once()
+	paymentService.On("CreatePayment", mock.Anything, mock.Anything).Return(checkout, nil).Once()
 	orderRepository.On("Insert", mock.Anything).Return(nil).Once()
 
 	usecase := NewCheckoutOrderUseCase(
 		orderRepository, customerService,
-		productService, paymentGateway,
+		productService, paymentService,
 	)
 
 	response, _ := usecase.Execute(nil, productsIds)
@@ -65,16 +65,16 @@ func TestCheckoutOrderUseCaseWithCustomer(t *testing.T) {
 	orderRepository := &repositories.MockOrderRepositoryInterface{}
 	customerService := &services.MockCustomerService{}
 	productService := &services.MockProductServiceInterface{}
-	paymentGateway := &services.MockPaymentGatewayInterface{}
+	paymentService := &services.MockPaymentServiceInterface{}
 
 	customerService.On("GetCustomerById", customerId).Return(customer, nil).Once()
 	productService.On("FindProductByID", productsIds[0]).Return(product, nil).Once()
-	paymentGateway.On("Execute", mock.Anything, dtos.PIX).Return(checkout, nil).Once()
+	paymentService.On("CreatePayment", mock.Anything, mock.Anything).Return(checkout, nil).Once()
 	orderRepository.On("Insert", mock.Anything).Return(nil).Once()
 
 	usecase := NewCheckoutOrderUseCase(
 		orderRepository, customerService,
-		productService, paymentGateway,
+		productService, paymentService,
 	)
 
 	response, _ := usecase.Execute(&customerId, productsIds)
@@ -90,13 +90,13 @@ func TestCheckoutOrderUseCaseWithCustomerErr(t *testing.T) {
 	orderRepository := &repositories.MockOrderRepositoryInterface{}
 	customerService := &services.MockCustomerService{}
 	productService := &services.MockProductServiceInterface{}
-	paymentGateway := &services.MockPaymentGatewayInterface{}
+	paymentService := &services.MockPaymentServiceInterface{}
 
 	customerService.On("GetCustomerById", customerId).Return(nil, errors.New("error")).Once()
 
 	usecase := NewCheckoutOrderUseCase(
 		orderRepository, customerService,
-		productService, paymentGateway,
+		productService, paymentService,
 	)
 
 	_, err := usecase.Execute(&customerId, productsIds)
@@ -111,13 +111,13 @@ func TestCheckoutOrderUseCaseWithProductErr(t *testing.T) {
 	orderRepository := &repositories.MockOrderRepositoryInterface{}
 	customerService := &services.MockCustomerService{}
 	productService := &services.MockProductServiceInterface{}
-	paymentGateway := &services.MockPaymentGatewayInterface{}
+	paymentService := &services.MockPaymentServiceInterface{}
 
 	productService.On("FindProductByID", productsIds[0]).Return(nil, errors.New("error")).Once()
 
 	usecase := NewCheckoutOrderUseCase(
 		orderRepository, customerService,
-		productService, paymentGateway,
+		productService, paymentService,
 	)
 
 	_, err := usecase.Execute(nil, productsIds)
@@ -138,14 +138,14 @@ func TestCheckoutOrderUseCaseWithPaymenteErr(t *testing.T) {
 	orderRepository := &repositories.MockOrderRepositoryInterface{}
 	customerService := &services.MockCustomerService{}
 	productService := &services.MockProductServiceInterface{}
-	paymentGateway := &services.MockPaymentGatewayInterface{}
+	paymentService := &services.MockPaymentServiceInterface{}
 
 	productService.On("FindProductByID", productsIds[0]).Return(product, nil).Once()
-	paymentGateway.On("Execute", mock.Anything, dtos.PIX).Return(nil, errors.New("error")).Once()
+	paymentService.On("CreatePayment", mock.Anything, mock.Anything).Return((*dtos.CheckoutDTO)(nil), errors.New("error")).Once()
 
 	usecase := NewCheckoutOrderUseCase(
 		orderRepository, customerService,
-		productService, paymentGateway,
+		productService, paymentService,
 	)
 
 	_, err := usecase.Execute(nil, productsIds)

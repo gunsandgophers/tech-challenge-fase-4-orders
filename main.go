@@ -1,8 +1,15 @@
 package main
 
 import (
+	"net/http"
 	_ "tech-challenge-fase-1/docs"
 	"tech-challenge-fase-1/internal/infra/app"
+	"tech-challenge-fase-1/internal/infra/config"
+	"tech-challenge-fase-1/internal/infra/database"
+	httpserver "tech-challenge-fase-1/internal/infra/http"
+	"tech-challenge-fase-1/internal/infra/queries"
+	"tech-challenge-fase-1/internal/infra/repositories"
+	"tech-challenge-fase-1/internal/infra/services"
 )
 
 //	@title			Swagger Example API
@@ -24,7 +31,25 @@ import (
 // @externalDocs.description	OpenAPI
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
-	app := app.NewAPIApp()
+	httpServer := httpserver.NewGinHTTPServerAdapter()
+	connection := database.NewPGXConnectionAdapter()
+	orderRepository := repositories.NewOrderRepositoryDB(connection)
+	orderDisplayListQuery := queries.NewOrderDisplayListQueryDB(connection)
+	customerService, err := services.NewAwsCustomerService(config.AWS_REGION, config.AWS_USER_POOL_ID)
+	if err != nil {
+		panic(err)
+	}
+	productService := services.NewProductService(http.DefaultClient)
+	paymentService := services.NewPaymentService(http.DefaultClient)
+
+	app := app.NewAPIApp(
+		httpServer,
+		orderRepository,
+		orderDisplayListQuery,
+		customerService,
+		productService,
+		paymentService,
+	)
 	app.Run()
-	defer app.Shutdown()
+	defer connection.Close()
 }

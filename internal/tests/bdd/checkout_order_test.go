@@ -12,6 +12,8 @@ import (
 	"tech-challenge-fase-1/internal/core/queries"
 	"tech-challenge-fase-1/internal/core/repositories"
 	"tech-challenge-fase-1/internal/core/services"
+	"tech-challenge-fase-1/internal/infra/app"
+	"tech-challenge-fase-1/internal/tests/fixtures"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -20,6 +22,7 @@ import (
 )
 
 type appCtxKey struct{}
+type depsCtxKey struct{}
 
 type sandwichCtxKey struct{}
 type drinkCtxKey struct{}
@@ -36,8 +39,8 @@ func thereAreProduct(ctx context.Context, category string) (context.Context, err
 		productCategory,
 		13.37, "Uma descricao ai", "")
 
-	server := ctx.Value(appCtxKey{}).(*APIApp)
-	server.productService.(*services.MockProductServiceInterface).
+	deps := ctx.Value(depsCtxKey{}).(*DependenciesCheckoutOrder)
+	deps.productService.(*services.MockProductServiceInterface).
 		On("FindProductByID", product.GetId()).Return(product, nil).Once()
 
 	if productCategory == entities.PRODUCT_CATEGORY_SANDWICH {
@@ -58,15 +61,16 @@ func iOpenOrder(ctx context.Context) (context.Context, error) {
 	sidedishes, _ := ctx.Value(sidedishesCtxKey{}).(*entities.Product)
 	dessets, _ := ctx.Value(dessetsCtxKey{}).(*entities.Product)
 
-	server := ctx.Value(appCtxKey{}).(*APIApp)
+	server := ctx.Value(appCtxKey{}).(*app.APIApp)
+	deps := ctx.Value(depsCtxKey{}).(*DependenciesCheckoutOrder)
 
 	paymentLink := ""
 	pix := dtos.PIX
 	amount := sandwich.GetPrice() + drink.GetPrice() +
 		sidedishes.GetPrice() + dessets.GetPrice()
 
-	server.mercadoPagoGateway.(*services.MockPaymentGatewayInterface).
-		On("Execute", mock.Anything, mock.Anything).
+	deps.paymentService.(*services.MockPaymentServiceInterface).
+		On("CreatePayment", mock.Anything, mock.Anything).
 		Return(&dtos.CheckoutDTO{
 			OrderId:     uuid.NewString(),
 			PaymentLink: &paymentLink,
@@ -74,7 +78,7 @@ func iOpenOrder(ctx context.Context) (context.Context, error) {
 			Amount:      &amount,
 		}, nil).Once()
 
-	server.orderRepository.(*repositories.MockOrderRepositoryInterface).On("Insert", mock.Anything).
+	deps.orderRepository.(*repositories.MockOrderRepositoryInterface).On("Insert", mock.Anything).
 		Return(nil).Once()
 
 	w := httptest.NewRecorder()
@@ -90,7 +94,7 @@ func iOpenOrder(ctx context.Context) (context.Context, error) {
 
 	req, _ := http.NewRequest("POST", "/api/v1/order/checkout", bytes.NewReader(body))
 
-	server.httpServer.ServeHTTP(w, req)
+	server.HTTPServer().ServeHTTP(w, req)
 
 	_ = context.WithValue(ctx, sandwichCtxKey{}, sandwich)
 	_ = context.WithValue(ctx, drinkCtxKey{}, drink)
@@ -124,22 +128,44 @@ func thereShouldOpenedOrder(ctx context.Context, items int) error {
 	return nil
 }
 
-func TestFeatures(t *testing.T) {
+type DependenciesCheckoutOrder struct {
+	customerService services.CustomerServiceInterface
+	productService services.ProductServiceInterface
+	paymentService services.PaymentServiceInterface
+	orderRepository repositories.OrderRepositoryInterface
+	orderDisplayListQuery queries.OrderDisplayListQueryInterface
+}
 
-	server := NewAPIAppTest(
-		services.NewMockCustomerService(t),
-		services.NewMockProductServiceInterface(t),
-		services.NewMockPaymentGatewayInterface(t),
-		repositories.NewMockOrderRepositoryInterface(t),
-		queries.NewMockOrderDisplayListQueryInterface(t),
+func TestFeatures(t *testing.T) {
+	customerService := services.NewMockCustomerService(t)
+	productService := services.NewMockProductServiceInterface(t)
+	paymentService := &services.MockPaymentServiceInterface{}
+	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
+	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
+	dependencies := &DependenciesCheckoutOrder{
+		customerService: customerService,
+		productService: productService,
+		paymentService: paymentService,
+		orderRepository: orderRepository,
+		orderDisplayListQuery: orderDisplayListQuery,
+	}
+	server := fixtures.NewAPIAppBDDTest(
+		orderRepository,
+		orderDisplayListQuery,
+		customerService,
+		productService,
+		paymentService,
 	)
+
+	ctx := context.WithValue(context.Background(), appCtxKey{}, server)
+	ctx = context.WithValue(ctx, depsCtxKey{}, dependencies)
 
 	suite := godog.TestSuite{
 		ScenarioInitializer: InitializeScenario,
 		Options: &godog.Options{
 			Format:         "pretty",
-			Paths:          []string{"../../../features"},
-			DefaultContext: context.WithValue(context.Background(), appCtxKey{}, server),
+      Paths:    []string{"features"},
+			DefaultContext: ctx,
 			TestingT:       t, // Testing instance that will run subtests.
 		},
 	}

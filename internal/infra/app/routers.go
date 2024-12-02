@@ -2,39 +2,31 @@ package app
 
 import (
 	"tech-challenge-fase-1/internal/infra/controllers"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	httpserver "tech-challenge-fase-1/internal/infra/http"
 )
 
 // Registra as rotas dos controllers
 func registerRouters(app *APIApp) {
-	helloController := controllers.NewHelloController()
+	// helloController := controllers.NewHelloController()
 
 	orderController := controllers.NewOrderController(
 		app.orderRepository,
 		app.customerService,
 		app.productService,
-		app.mercadoPagoGateway,
+		app.paymentService,
 		app.orderDisplayListQuery,
 	)
 
 	baseUrl := "/api/v1"
-	app.httpServer.SetBasePath(baseUrl)
-	app.httpServer.GET("/", helloController.Index)
+	app.httpServer.(httpserver.HTTPRoutes).SetBasePath(baseUrl)
+	// app.httpServer.GET("/", helloController.Index)
 
 	//orders
-	app.httpServer.POST("/order/checkout", orderController.Checkout)
-	app.httpServer.GET(
-		"/order/:order_id/payment-status",
-		orderController.GetPaymentStatus,
-	)
-	app.httpServer.POST("/order/payment", orderController.Payment)
-	app.httpServer.GET("/order/display", orderController.OrderDisplayList)
-	app.httpServer.PUT(
+	app.httpServer.(httpserver.HTTPRoutes).POST("/order/checkout", orderController.Checkout)
+	app.httpServer.(httpserver.HTTPRoutes).GET("/order/display", orderController.OrderDisplayList)
+	app.httpServer.(httpserver.HTTPRoutes).PUT(
 		"/order/:order_id/preparation-status",
 		orderController.OrderPreparationStatusUpdate,
 	)
-
-	app.httpServer.SetSwagger("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	app.httpServer.(httpserver.HTTPRoutes).SetSwagger("/swagger/*any")
 }
