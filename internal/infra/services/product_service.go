@@ -43,12 +43,12 @@ func (p *ProductService) FindProductByID(id string) (*entities.Product, error) {
 	err = json.Unmarshal(bodyBytes, &body)
 
 	product := entities.RestoreProduct(
-		body.Product.ID,
-		body.Product.Name,
-		entities.ProductCategory(body.Product.Category),
-		body.Product.Price,
-		body.Product.Description,
-		body.Product.Image,
+		body.Data.Product.ID,
+		body.Data.Product.Name,
+		entities.ProductCategory(body.Data.Product.Category),
+		body.Data.Product.Price,
+		body.Data.Product.Description,
+		body.Data.Product.Image,
 	)
 
 	if err != nil {

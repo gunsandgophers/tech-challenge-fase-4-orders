@@ -35,6 +35,11 @@ spec:
             configMapKeyRef:
               name: tech-challenge-fase-4-order-api-config
               key: SERVICE_PRODUCTS_URL
+        - name: SERVICE_PAYMENT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: tech-challenge-fase-4-order-api-config
+              key: SERVICE_PAYMENT_URL
         - name: DB_USER
           valueFrom:
             secretKeyRef:
@@ -53,5 +58,5 @@ spec:
           periodSeconds: 15
         resources:
           requests:
-            cpu: 100m
+            cpu: 200m
 

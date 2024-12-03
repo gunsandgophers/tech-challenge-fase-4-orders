@@ -8,8 +8,12 @@ const (
 )
 
 type CheckoutDTO struct {
-	OrderId string
+	OrderId     string
 	PaymentLink *string
 	Method      *MethodType
 	Amount      *float64
+}
+
+type CheckoutDTOResponse struct {
+	Data CheckoutDTO `json:"data"`
 }

@@ -24,13 +24,15 @@ func TestFindProductByID(t *testing.T) {
 	productID := uuid.NewString()
 
 	body := dtos.ProductResponseDTO{
-		Product: dtos.ProductDTO{
-			ID:          uuid.NewString(),
-			Name:        "Um nome",
-			Category:    "DRINKS",
-			Price:       13.37,
-			Description: "Uma descrição",
-			Image:       "url",
+		Data: dtos.DataDTO{
+			Product: dtos.ProductDTO{
+				ID:          uuid.NewString(),
+				Name:        "Um nome",
+				Category:    "DRINKS",
+				Price:       13.37,
+				Description: "Uma descrição",
+				Image:       "url",
+			},
 		},
 	}
 
@@ -43,7 +45,7 @@ func TestFindProductByID(t *testing.T) {
 	response, err := service.FindProductByID(productID)
 
 	assert.Nil(t, err)
-	assert.Equal(t, response.GetId(), body.Product.ID)
+	assert.Equal(t, response.GetId(), body.Data.Product.ID)
 }
 
 func TestFindProductByIDWithError(t *testing.T) {

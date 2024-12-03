@@ -8,6 +8,10 @@ type ProductDTO struct {
 	Description string  `json:"Description"`
 	Image       string  `json:"Image"`
 }
-type ProductResponseDTO struct {
+
+type DataDTO struct {
 	Product ProductDTO `json:"product"`
+}
+type ProductResponseDTO struct {
+	Data DataDTO `json:"data"`
 }
