@@ -19,7 +19,6 @@ func registerRouters(app *APIApp) {
 
 	baseUrl := "/api/v1"
 	app.httpServer.(httpserver.HTTPRoutes).SetBasePath(baseUrl)
-	// app.httpServer.GET("/", helloController.Index)
 
 	//orders
 	app.httpServer.(httpserver.HTTPRoutes).POST("/order/checkout", orderController.Checkout)

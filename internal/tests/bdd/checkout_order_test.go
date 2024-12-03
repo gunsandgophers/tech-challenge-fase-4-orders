@@ -14,6 +14,7 @@ import (
 	"tech-challenge-fase-1/internal/core/services"
 	"tech-challenge-fase-1/internal/infra/app"
 	"tech-challenge-fase-1/internal/tests/fixtures"
+	"tech-challenge-fase-1/internal/tests/mocks"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -40,7 +41,7 @@ func thereAreProduct(ctx context.Context, category string) (context.Context, err
 		13.37, "Uma descricao ai", "")
 
 	deps := ctx.Value(depsCtxKey{}).(*DependenciesCheckoutOrder)
-	deps.productService.(*services.MockProductServiceInterface).
+	deps.productService.(*mocks.MockProductServiceInterface).
 		On("FindProductByID", product.GetId()).Return(product, nil).Once()
 
 	if productCategory == entities.PRODUCT_CATEGORY_SANDWICH {
@@ -69,7 +70,7 @@ func iOpenOrder(ctx context.Context) (context.Context, error) {
 	amount := sandwich.GetPrice() + drink.GetPrice() +
 		sidedishes.GetPrice() + dessets.GetPrice()
 
-	deps.paymentService.(*services.MockPaymentServiceInterface).
+	deps.paymentService.(*mocks.MockPaymentServiceInterface).
 		On("CreatePayment", mock.Anything, mock.Anything).
 		Return(&dtos.CheckoutDTO{
 			OrderId:     uuid.NewString(),
@@ -78,7 +79,7 @@ func iOpenOrder(ctx context.Context) (context.Context, error) {
 			Amount:      &amount,
 		}, nil).Once()
 
-	deps.orderRepository.(*repositories.MockOrderRepositoryInterface).On("Insert", mock.Anything).
+	deps.orderRepository.(*mocks.MockOrderRepositoryInterface).On("Insert", mock.Anything).
 		Return(nil).Once()
 
 	w := httptest.NewRecorder()
@@ -129,27 +130,27 @@ func thereShouldOpenedOrder(ctx context.Context, items int) error {
 }
 
 type DependenciesCheckoutOrder struct {
-	customerService services.CustomerServiceInterface
-	productService services.ProductServiceInterface
-	paymentService services.PaymentServiceInterface
-	orderRepository repositories.OrderRepositoryInterface
+	customerService       services.CustomerServiceInterface
+	productService        services.ProductServiceInterface
+	paymentService        services.PaymentServiceInterface
+	orderRepository       repositories.OrderRepositoryInterface
 	orderDisplayListQuery queries.OrderDisplayListQueryInterface
 }
 
 func TestFeatures(t *testing.T) {
-	customerService := services.NewMockCustomerService(t)
-	productService := services.NewMockProductServiceInterface(t)
-	paymentService := &services.MockPaymentServiceInterface{}
-	orderRepository := repositories.NewMockOrderRepositoryInterface(t)
-	orderDisplayListQuery := queries.NewMockOrderDisplayListQueryInterface(t)
+	customerService := mocks.NewMockCustomerService(t)
+	productService := mocks.NewMockProductServiceInterface(t)
+	paymentService := mocks.NewMockPaymentServiceInterface(t)
+	orderRepository := mocks.NewMockOrderRepositoryInterface(t)
+	orderDisplayListQuery := mocks.NewMockOrderDisplayListQueryInterface(t)
 	dependencies := &DependenciesCheckoutOrder{
-		customerService: customerService,
-		productService: productService,
-		paymentService: paymentService,
-		orderRepository: orderRepository,
+		customerService:       customerService,
+		productService:        productService,
+		paymentService:        paymentService,
+		orderRepository:       orderRepository,
 		orderDisplayListQuery: orderDisplayListQuery,
 	}
-	server := fixtures.NewAPIAppBDDTest(
+	server := fixtures.NewAPIAppIntegrationTest(
 		orderRepository,
 		orderDisplayListQuery,
 		customerService,
@@ -164,7 +165,7 @@ func TestFeatures(t *testing.T) {
 		ScenarioInitializer: InitializeScenario,
 		Options: &godog.Options{
 			Format:         "pretty",
-      Paths:    []string{"features"},
+			Paths:          []string{"features"},
 			DefaultContext: ctx,
 			TestingT:       t, // Testing instance that will run subtests.
 		},
