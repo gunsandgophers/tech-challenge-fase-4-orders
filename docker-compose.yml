@@ -11,53 +11,21 @@ services:
       - ./:/app
     command: go run main.go
     environment:
-      POSTGRES_DB: tech-challenge-fase
-      POSTGRES_USER: tech-challenge-fase
-      POSTGRES_PASSWORD: tech-challenge-fase
+      DB_HOST: mongodb
+      DB_PORT: "27017"
+      DB_USER: admin
+      DB_PASSWORD: senha123
+      DB_NAME: orders
       AWS_REGION: us-east-1
       AWS_USER_POOL_ID: us-east-1_3ofqHwfxr
-    depends_on:
-      db:
-        condition: service_healthy
-  db:
-    image: postgres:16.3
+  mongodb:
+    image: mongo
+    container_name: mongodb
     restart: always
     ports:
-      - "5432:5432"
+      - "27017:27017" # Porta padrão do MongoDB
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin # Usuário administrador
+      MONGO_INITDB_ROOT_PASSWORD: senha123 # Senha do administrador
     volumes:
-      - ./data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: tech-challenge-fase
-      POSTGRES_USER: tech-challenge-fase
-      POSTGRES_PASSWORD: tech-challenge-fase
-      PGDATA: /var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tech-challenge-fase"]
-      interval: 1s
-      timeout: 1s
-      retries: 5
-  pgadmin4:
-    image: elestio/pgadmin:REL-8_6
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@challenge.com
-      PGADMIN_DEFAULT_PASSWORD: 12345678
-      PGADMIN_LISTEN_PORT: 8080
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./data/servers.json:/pgadmin4/servers.json
-    depends_on:
-      db:
-        condition: service_healthy
-  migrate:
-    build:
-      context: ./migrations
-      dockerfile: Dockerfile
-    image: local-migrate
-    environment:
-      DB_URI: "postgres://tech-challenge-fase:tech-challenge-fase@db/tech-challenge-fase?sslmode=disable"
-    restart: on-failure:5
-    depends_on:
-      db:
-        condition: service_healthy
+      - ./data:/data/db # Volume persistente para os dados

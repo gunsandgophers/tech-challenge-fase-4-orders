@@ -32,9 +32,9 @@ import (
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
 	httpServer := httpserver.NewGinHTTPServerAdapter()
-	connection := database.NewPGXConnectionAdapter()
-	orderRepository := repositories.NewOrderRepositoryDB(connection)
-	orderDisplayListQuery := queries.NewOrderDisplayListQueryDB(connection)
+	db := database.ConnectDatabase()
+	orderRepository := repositories.NewOrderRepositoryMongo(db)
+	orderDisplayListQuery := queries.NewOrderDisplayListQueryMongo(db)
 
 	client, err := services.NewCognito(config.AWS_REGION)
 	if err != nil {
@@ -55,5 +55,4 @@ func main() {
 		paymentService,
 	)
 	app.Run()
-	defer connection.Close()
 }

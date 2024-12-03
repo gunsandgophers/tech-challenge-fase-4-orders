@@ -16,7 +16,7 @@ type PGXConnectionAdapter struct {
 func NewPGXConnectionAdapter() *PGXConnectionAdapter {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s",
-		config.DB_HOST, config.DB_POST, config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
+		config.DB_HOST, config.DB_PORT, config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
 
 	pool, err := pgxpool.New(context.Background(), psqlInfo)
 	if err != nil {
