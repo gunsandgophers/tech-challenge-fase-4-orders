@@ -9,13 +9,6 @@ definitions:
           type: string
         type: array
     type: object
-  controllers.PaymentRequest:
-    properties:
-      order_id:
-        type: string
-      payment_status:
-        type: string
-    type: object
   controllers.PreparationStatusUpdateRequest:
     properties:
       preparation_status:
@@ -62,13 +55,6 @@ definitions:
       quantity:
         type: integer
     type: object
-  dtos.PaymentStatusDTO:
-    properties:
-      order_id:
-        type: string
-      payment_status:
-        type: string
-    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -85,50 +71,6 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /:
-    get:
-      consumes:
-      - application/json
-      description: get index payload
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: Show the index payload
-      tags:
-      - index
-  /order/{order_id}/payment-status:
-    get:
-      consumes:
-      - application/json
-      description: get payment status by order_id
-      parameters:
-      - description: Get Payment Status
-        in: path
-        name: order_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dtos.PaymentStatusDTO'
-        "400":
-          description: when bad request
-          schema:
-            type: string
-        "406":
-          description: when invalid params or invalid object
-          schema:
-            type: string
-      summary: Get a payment status
-      tags:
-      - orders
   /order/{order_id}/preparation-status:
     put:
       consumes:
@@ -207,36 +149,6 @@ paths:
           schema:
             type: string
       summary: Get order list
-      tags:
-      - orders
-  /order/payment:
-    post:
-      consumes:
-      - application/json
-      description: process the payment for an order
-      parameters:
-      - description: Payment
-        in: body
-        name: payment
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.PaymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: when bad request
-          schema:
-            type: string
-        "406":
-          description: when invalid params or invalid object
-          schema:
-            type: string
-      summary: Process order payment
       tags:
       - orders
 securityDefinitions:

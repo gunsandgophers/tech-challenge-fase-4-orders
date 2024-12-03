@@ -17,10 +17,10 @@ migrate/create:
 	docker run -v ./migrations:/migrations --network host migrate/migrate create -ext sql -dir ./migrations $(name)
 
 swagger:
-	docker run --rm -v ./:/code ghcr.io/swaggo/swag:latest init
+	docker run --rm -v ./:/code ghcr.io/swaggo/swag:v1.16.4 init
 
 swagger-mac:
-	docker run --platform linux/amd64 --rm -v ./:/code ghcr.io/swaggo/swag:latest init
+	docker run --platform linux/amd64 --rm -v ./:/code ghcr.io/swaggo/swag:v1.16.4 init
 
 mock/create:
 	docker run -v ./:/src -w /src vektra/mockery --all
