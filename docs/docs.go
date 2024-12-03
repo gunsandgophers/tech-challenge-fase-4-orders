@@ -24,29 +24,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
-            "get": {
-                "description": "get index payload",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "index"
-                ],
-                "summary": "Show the index payload",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/order/checkout": {
             "post": {
                 "description": "make a checkout for an order",
@@ -125,96 +102,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/payment": {
-            "post": {
-                "description": "process the payment for an order",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Process order payment",
-                "parameters": [
-                    {
-                        "description": "Payment",
-                        "name": "payment",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controllers.PaymentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "when bad request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "406": {
-                        "description": "when invalid params or invalid object",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/order/{order_id}/payment-status": {
-            "get": {
-                "description": "get payment status by order_id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Get a payment status",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Get Payment Status",
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.PaymentStatusDTO"
-                        }
-                    },
-                    "400": {
-                        "description": "when bad request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "406": {
-                        "description": "when invalid params or invalid object",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/order/{order_id}/preparation-status": {
             "put": {
                 "description": "Update the preparation status for an order",
@@ -272,17 +159,6 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
-                }
-            }
-        },
-        "controllers.PaymentRequest": {
-            "type": "object",
-            "properties": {
-                "order_id": {
-                    "type": "string"
-                },
-                "payment_status": {
-                    "type": "string"
                 }
             }
         },
@@ -353,17 +229,6 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
-                }
-            }
-        },
-        "dtos.PaymentStatusDTO": {
-            "type": "object",
-            "properties": {
-                "order_id": {
-                    "type": "string"
-                },
-                "payment_status": {
-                    "type": "string"
                 }
             }
         }
