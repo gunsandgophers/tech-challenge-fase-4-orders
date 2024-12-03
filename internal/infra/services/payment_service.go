@@ -42,11 +42,11 @@ func (p *PaymentService) CreatePayment(orderID string, amount float64) (*dtos.Ch
 		return nil, err
 	}
 
-	var checkout dtos.CheckoutDTO
+	var checkout dtos.CheckoutDTOResponse
 	err = json.Unmarshal(bodyBytes, &checkout)
 	if err != nil {
 		return nil, err
 	}
 
-	return &checkout, nil
+	return &checkout.Data, nil
 }

@@ -26,8 +26,10 @@ func TestCreatePayment(t *testing.T) {
 	paymentLink := "url"
 	method := dtos.PIX
 
-	body := dtos.CheckoutDTO{OrderId: orderID,
-		PaymentLink: &paymentLink, Method: &method, Amount: &amount,
+	body := dtos.CheckoutDTOResponse{
+		Data: dtos.CheckoutDTO{
+			OrderId:     orderID,
+			PaymentLink: &paymentLink, Method: &method, Amount: &amount},
 	}
 
 	raw, _ := json.Marshal(body)
