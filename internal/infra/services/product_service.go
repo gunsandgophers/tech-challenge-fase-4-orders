@@ -7,13 +7,14 @@ import (
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/core/entities"
 	"tech-challenge-fase-1/internal/infra/config"
+	httpserver "tech-challenge-fase-1/internal/infra/http"
 )
 
 type ProductService struct {
-	client *http.Client
+	client httpserver.HTTPClientInterface
 }
 
-func NewProductService(client *http.Client) *ProductService {
+func NewProductService(client httpserver.HTTPClientInterface) *ProductService {
 	return &ProductService{
 		client: client,
 	}

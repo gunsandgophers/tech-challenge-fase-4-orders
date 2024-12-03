@@ -7,13 +7,14 @@ import (
 	"net/http"
 	"tech-challenge-fase-1/internal/core/dtos"
 	"tech-challenge-fase-1/internal/infra/config"
+	httpserver "tech-challenge-fase-1/internal/infra/http"
 )
 
 type PaymentService struct {
-	client *http.Client
+	client httpserver.HTTPClientInterface
 }
 
-func NewPaymentService(client *http.Client) *PaymentService {
+func NewPaymentService(client httpserver.HTTPClientInterface) *PaymentService {
 	return &PaymentService{
 		client: client,
 	}
@@ -43,6 +44,9 @@ func (p *PaymentService) CreatePayment(orderID string, amount float64) (*dtos.Ch
 
 	var checkout dtos.CheckoutDTO
 	err = json.Unmarshal(bodyBytes, &checkout)
+	if err != nil {
+		return nil, err
+	}
 
 	return &checkout, nil
 }
