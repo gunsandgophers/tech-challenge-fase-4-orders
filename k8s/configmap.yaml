@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: tech-challenge-fase-4-order-api-config
 data:
-  DB_HOST: "tech-challenge-fase-4-order-postgres"
+  DB_HOST: "tech-challenge-fase-4-rds.cdmsim2u8a3c.us-east-1.rds.amazonaws.com"
   DB_NAME: "tech-challenge-fase-4-order"
-  DB_DATA: "/var/lib/postgresql/data"
   SERVICE_PRODUCTS_URL: "tech-challenge-fase-4-products-deployment"
+  SERVICE_PAYMENT_URL: "tech-challenge-fase-4-payments-deployment"

@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
       - name: tech-challenge-fase-4-order-app
-        image: tech-challenge-fase-4-order
-        imagePullPolicy: Never
+        image: raffiuds/tech-challenge-fase-4-order:latest
         ports:
         - containerPort: 8080
         env:
