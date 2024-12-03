@@ -8,25 +8,31 @@ import (
 	cognito "github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 )
 
+type CognitoClientInterface interface {
+	ListUsers(input *cognito.ListUsersInput) (*cognito.ListUsersOutput, error)
+	AdminGetUser(input *cognito.AdminGetUserInput) (*cognito.AdminGetUserOutput, error)
+	AdminCreateUser(input *cognito.AdminCreateUserInput) (*cognito.AdminCreateUserOutput, error)
+}
+
 type CognitoClient struct {
-	client *cognito.CognitoIdentityProvider
+	client     CognitoClientInterface
 	userPoolId string
 }
 
 type CognitoUser struct {
-	Id string
+	Id       string
 	Username string
-	Name string
-	Email string
+	Name     string
+	Email    string
 }
 
 type CognitoCreateUser struct {
 	Username string
-	Name string
-	Email string
+	Name     string
+	Email    string
 }
 
-func NewCognitoClient(region string, userPoolId string) (*CognitoClient, error) {
+func NewCognito(region string) (*cognito.CognitoIdentityProvider, error) {
 	conf := &aws.Config{
 		Region: aws.String(region),
 	}
@@ -34,18 +40,25 @@ func NewCognitoClient(region string, userPoolId string) (*CognitoClient, error) 
 	if err != nil {
 		return nil, err
 	}
+
 	client := cognito.New(sess)
+
+	return client, nil
+}
+
+func NewCognitoClient(client CognitoClientInterface, userPoolId string) *CognitoClient {
+
 	return &CognitoClient{
-		client: client,
+		client:     client,
 		userPoolId: userPoolId,
-	}, nil
+	}
 }
 
 func (cc *CognitoClient) GetUserBySub(sub string) (*CognitoUser, error) {
 	input := &cognito.ListUsersInput{
 		UserPoolId: aws.String(cc.userPoolId),
-		Filter: aws.String(fmt.Sprintf("sub = \"%s\"", sub)),
-		Limit: aws.Int64(1),
+		Filter:     aws.String(fmt.Sprintf("sub = \"%s\"", sub)),
+		Limit:      aws.Int64(1),
 	}
 	output, err := cc.client.ListUsers(input)
 	if err != nil {
@@ -75,7 +88,7 @@ func (cc *CognitoClient) GetUserBySub(sub string) (*CognitoUser, error) {
 func (cc *CognitoClient) GetUser(username string) (*CognitoUser, error) {
 	input := &cognito.AdminGetUserInput{
 		UserPoolId: aws.String(cc.userPoolId),
-		Username: aws.String(username),
+		Username:   aws.String(username),
 	}
 	output, err := cc.client.AdminGetUser(input)
 	if err != nil {
@@ -106,7 +119,7 @@ func (cc *CognitoClient) CreateUser(user *CognitoCreateUser) (*CognitoUser, erro
 			{Name: aws.String("email"), Value: aws.String(user.Email)},
 			{Name: aws.String("name"), Value: aws.String(user.Name)},
 		},
-		Username: &user.Username,
+		Username:   &user.Username,
 		UserPoolId: aws.String(cc.userPoolId),
 	}
 	output, err := cc.client.AdminCreateUser(input)
@@ -127,4 +140,3 @@ func (cc *CognitoClient) CreateUser(user *CognitoCreateUser) (*CognitoUser, erro
 	}
 	return cognitoUser, nil
 }
-

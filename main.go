@@ -35,10 +35,14 @@ func main() {
 	connection := database.NewPGXConnectionAdapter()
 	orderRepository := repositories.NewOrderRepositoryDB(connection)
 	orderDisplayListQuery := queries.NewOrderDisplayListQueryDB(connection)
-	customerService, err := services.NewAwsCustomerService(config.AWS_REGION, config.AWS_USER_POOL_ID)
+
+	client, err := services.NewCognito(config.AWS_REGION)
 	if err != nil {
 		panic(err)
 	}
+
+	customerService := services.NewAwsCustomerService(client, config.AWS_USER_POOL_ID)
+
 	productService := services.NewProductService(http.DefaultClient)
 	paymentService := services.NewPaymentService(http.DefaultClient)
 

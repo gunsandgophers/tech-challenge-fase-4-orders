@@ -10,16 +10,14 @@ type AwsCustomerService struct {
 }
 
 func NewAwsCustomerService(
-	region string,
+	client CognitoClientInterface,
 	userPoolId string,
-) (*AwsCustomerService, error) {
-	cognitoClient, err := NewCognitoClient(region, userPoolId)
-	if err != nil {
-		return nil, err
-	}
+) *AwsCustomerService {
+	cognitoClient := NewCognitoClient(client, userPoolId)
+
 	return &AwsCustomerService{
 		serviceClient: cognitoClient,
-	}, nil
+	}
 }
 
 func (a *AwsCustomerService) GetCustomerByCPF(cpf *valueobjects.CPF) (*entities.Customer, error) {
