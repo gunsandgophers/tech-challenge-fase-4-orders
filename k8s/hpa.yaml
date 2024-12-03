@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: tech-challenge-fase-4-order-deployment
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   metrics:
   - type: Resource
     resource:

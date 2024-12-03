@@ -62,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: raffiuds/tech-challenge-fase-4-products:latest
+          tags: raffiuds/tech-challenge-fase-4-order:latest
           context: .
 
       - name: Update Kube Config
