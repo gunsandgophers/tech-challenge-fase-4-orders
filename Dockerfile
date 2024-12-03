@@ -14,7 +14,7 @@ RUN go mod download
 
 RUN go build -o build/main
 
-ENTRYPOINT ./build/main
+CMD [ "build/main" ] 
 
 # Optional:
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.
